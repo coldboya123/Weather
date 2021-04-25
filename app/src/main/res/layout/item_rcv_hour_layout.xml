@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="7dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txthour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12pm"
+        android:textSize="13sp" />
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/img_02d_2x" />
+
+    <TextView
+        android:id="@+id/temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="88 °F"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+</LinearLayout>
