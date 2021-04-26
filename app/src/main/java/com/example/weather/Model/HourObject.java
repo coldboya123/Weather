@@ -1,4 +1,4 @@
-package com.example.weather;
+package com.example.weather.Model;
 
 public class HourObject extends Object {
     private int hour;

@@ -1,10 +1,15 @@
 package com.example.weather;
 
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.weather.Adapter.RCVMainAdapter;
+import com.example.weather.Model.DateObject;
+import com.example.weather.Model.HourObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     List<HourObject> hourObjectList;
     List<DateObject> dateObjectList;
+    int day = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         getData();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        recyclerView.setAdapter(new RCVMainAdapter(this, hourObjectList, dateObjectList));
+        RCVMainAdapter adapter = new RCVMainAdapter(this, hourObjectList, dateObjectList);
+        recyclerView.setAdapter(adapter);
     }
 
     private void getData() {
@@ -56,14 +63,21 @@ public class MainActivity extends AppCompatActivity {
         hourObjectList.add(new HourObject(R.drawable.img_09d_2x, "82 °F", 24));
 
         dateObjectList = new ArrayList<>();
-        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "93/80 °F", new Date(2020, 3, 25)));
-        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "98/81 °F", new Date(2020, 3, 26)));
-        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "94/80 °F", new Date(2020, 3, 27)));
-        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "92/80 °F", new Date(2020, 3, 28)));
-        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "93/79 °F", new Date(2020, 3, 29)));
-        dateObjectList.add(new DateObject(R.drawable.img_04d_2x, "94/79 °F", new Date(2020, 3, 30)));
-        dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, 1)));
-        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, 2)));
-
+        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "93/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "98/81 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "94/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "92/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "93/79 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_04d_2x, "94/79 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
+        dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
     }
+
+
 }
