@@ -1,9 +1,16 @@
 package com.example.weather;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ScrollView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,18 +28,52 @@ public class MainActivity extends AppCompatActivity {
     List<HourObject> hourObjectList;
     List<DateObject> dateObjectList;
     int day = 0;
+    NestedScrollView nestedScrollView;
+    RCVMainAdapter adapter;
+    boolean isLast = false;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        nestedScrollView = findViewById(R.id.parnetlayout);
+
         recyclerView = findViewById(R.id.rcv);
         getData();
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        RCVMainAdapter adapter = new RCVMainAdapter(this, hourObjectList, dateObjectList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new RCVMainAdapter(this, hourObjectList, dateObjectList);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setAdapter(adapter);
+
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (v.getChildAt(v.getChildCount() - 1) != null) {
+                if (scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())
+                        && scrollY > oldScrollY && !isLast) {
+                    isLast = true;
+                    LoadMore();
+                }
+            }
+
+        });
+    }
+
+    private void LoadMore() {
+        dateObjectList.add(null);
+        adapter.NotifyDateInsert();
+        new Handler().postDelayed(() -> {
+            dateObjectList.remove(dateObjectList.size() - 1);
+            dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
+            dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
+            dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
+            dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
+            dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
+            dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
+            dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
+            adapter.NotifyDateRecyclerView();
+            isLast = false;
+        }, 1500);
     }
 
     private void getData() {
@@ -78,6 +119,4 @@ public class MainActivity extends AppCompatActivity {
         dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
         dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
     }
-
-
 }

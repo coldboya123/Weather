@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,12 +21,12 @@ import com.example.weather.R;
 
 import java.util.List;
 
-public class RCVDateAdapter extends RecyclerView.Adapter<RCVDateAdapter.ViewHolder> {
+public class RCVDateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private List<DateObject> list;
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
-    private OnItemSelect onItemSelect;
+    private final int ITEMVIEW = 0, LOADINGVIEW = 1;
 
     public RCVDateAdapter(Context context, List<DateObject> list) {
         this.context = context;
@@ -34,29 +35,45 @@ public class RCVDateAdapter extends RecyclerView.Adapter<RCVDateAdapter.ViewHold
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.item_rcv_date_layout, parent, false);
-        return new ViewHolder(v);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v;
+        switch (viewType) {
+            case ITEMVIEW:
+                v = LayoutInflater.from(context).inflate(R.layout.item_rcv_date_layout, parent, false);
+                return new ViewHolder(v);
+            case LOADINGVIEW:
+                v = LayoutInflater.from(context).inflate(R.layout.loading_layout, parent, false);
+                return new LoadingHolder(v);
+        }
+        return null;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        DateObject object = list.get(position);
-        String date = object.getDate().toString().split(" 00")[0];
-        holder.mtxtDate.setText(date);
-        holder.mtxtTemperature.setText(object.getTemperature());
-        holder.mImg.setImageResource(object.getImg());
-        binderHelper.bind(holder.swipeRevealLayout, date);
-        holder.btndel.setOnClickListener(v -> {
-//            onItemSelect.onDel(position);
-            list.remove(position);
-            notifyDataSetChanged();
-        } );
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+            DateObject object = list.get(position);
+            String date = object.getDate().toString().split(" 00")[0];
+            ((ViewHolder) holder).mtxtDate.setText(date);
+            ((ViewHolder) holder).mtxtTemperature.setText(object.getTemperature());
+            ((ViewHolder) holder).mImg.setImageResource(object.getImg());
+            binderHelper.bind(((ViewHolder) holder).swipeRevealLayout, date);
+            ((ViewHolder) holder).btndel.setOnClickListener(v -> {
+                list.remove(position);
+                notifyDataSetChanged();
+            });
+        } else if (holder instanceof LoadingHolder) {
+            ((LoadingHolder) holder).progressBar.setIndeterminate(true);
+        }
     }
 
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return list.get(position) != null ? ITEMVIEW : LOADINGVIEW;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -75,8 +92,13 @@ public class RCVDateAdapter extends RecyclerView.Adapter<RCVDateAdapter.ViewHold
         }
     }
 
-    public void SetOnItemCickRecyclerView(OnItemSelect onItemSelect){
-        this.onItemSelect = onItemSelect;
+    public class LoadingHolder extends RecyclerView.ViewHolder {
+        ProgressBar progressBar;
+
+        public LoadingHolder(@NonNull View itemView) {
+            super(itemView);
+            progressBar = itemView.findViewById(R.id.loading);
+        }
     }
 }
 

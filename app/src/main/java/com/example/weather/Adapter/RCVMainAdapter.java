@@ -1,8 +1,6 @@
 package com.example.weather.Adapter;
 
 import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +13,14 @@ import com.example.weather.Model.DateObject;
 import com.example.weather.Model.HourObject;
 import com.example.weather.R;
 
-import java.util.Date;
 import java.util.List;
 
 public class RCVMainAdapter extends RecyclerView.Adapter<RCVMainAdapter.ViewHolder> {
 
-    private Context context;
-    private List<HourObject> hourObjectList;
-    private List<DateObject> dateObjectList;
-    private boolean isLast = false;
-    private int visibleItem, scrolloutItem, totalItemCount;
-    private int day = 14;
+    private final Context context;
+    private final List<HourObject> hourObjectList;
+    private final List<DateObject> dateObjectList;
+    private RCVDateAdapter dateAdapter;
 
     public RCVMainAdapter(Context context, List<HourObject> hourObjectList, List<DateObject> dateObjectList) {
         this.context = context;
@@ -48,26 +43,11 @@ public class RCVMainAdapter extends RecyclerView.Adapter<RCVMainAdapter.ViewHold
                 holder.recyclerView.setAdapter(new RCVHourAdapter(context, hourObjectList));
                 break;
             case 1:
-                LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-                RCVDateAdapter adapter = new RCVDateAdapter(context, dateObjectList);
-                holder.recyclerView.setAdapter(adapter);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
+                dateAdapter = new RCVDateAdapter(context, dateObjectList);
+                holder.recyclerView.setAdapter(dateAdapter);
                 holder.recyclerView.setLayoutManager(layoutManager);
 
-                holder.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
-                    @Override
-                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        totalItemCount = layoutManager.getItemCount();
-                        visibleItem = layoutManager.getChildCount();
-                        scrolloutItem = layoutManager.findFirstVisibleItemPosition();
-                        if (dy > 0 && !isLast && totalItemCount == visibleItem + scrolloutItem){
-                            isLast = true;
-                            LoadMore();
-                            notifyDataSetChanged();
-                        }
-                    }
-                });
                 break;
         }
     }
@@ -77,18 +57,14 @@ public class RCVMainAdapter extends RecyclerView.Adapter<RCVMainAdapter.ViewHold
         return 2;
     }
 
-    private void LoadMore() {
-        new Handler().postDelayed(() -> {
-            dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
-            dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
-            dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
-            dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
-            dateObjectList.add(new DateObject(R.drawable.img_03d_2x, "98/80 °F", new Date(2020, 4, ++day)));
-            dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
-            dateObjectList.add(new DateObject(R.drawable.img_10d_2x, "96/80 °F", new Date(2020, 4, ++day)));
-        }, 1500);
-        isLast = false;
+    public void NotifyDateRecyclerView() {
+        dateAdapter.notifyDataSetChanged();
     }
+
+    public void NotifyDateInsert() {
+        dateAdapter.notifyItemInserted(dateObjectList.size() - 1);
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         RecyclerView recyclerView;
@@ -98,5 +74,6 @@ public class RCVMainAdapter extends RecyclerView.Adapter<RCVMainAdapter.ViewHold
             recyclerView = itemView.findViewById(R.id.rcv);
         }
     }
+
 
 }
